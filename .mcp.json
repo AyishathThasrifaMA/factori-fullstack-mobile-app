@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "jetro": {
+      "type": "stdio",
+      "command": "C:\\Users\\thasr\\.jetro\\runtime\\node-win32-x64.exe",
+      "args": [
+        "C:\\Users\\thasr\\.jetro\\mcp-server\\index.js"
+      ],
+      "env": {
+        "JET_WORKSPACE": "d:\\factori.com-FullStack",
+        "JET_API_URL": "https://api.jetro.ai",
+        "PATH": "C:\\Users\\thasr\\.jetro\\runtime;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Amazon\\AWSCLIV2\\;C:\\Program Files\\Git\\cmd;D:\\flutter_SDK\\flutter_windows_3.27.1-stable\\flutter;D:\\android_sdk;D:\\flutter_SDK\\flutter_windows_3.27.1-stable\\flutter\\bin;C:\\Program Files\\Android\\Android Studio\\bin;C:\\Users\\thasr\\AppData\\Local\\Android\\Sdk\\cmdline-tools\\latest\\bin;C:\\Program Files\\MongoDB\\Server\\8.0\\bin;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\Java\\jdk-25\\bin;C:\\Program Files\\nodejs\\;C:\\Program Files\\dotnet\\;C:\\Users\\thasr\\anaconda3\\anaconda;C:\\Users\\thasr\\anaconda3\\anaconda\\Library\\mingw-w64\\bin;C:\\Users\\thasr\\anaconda3\\anaconda\\Library\\usr\\bin;C:\\Users\\thasr\\anaconda3\\anaconda\\Library\\bin;C:\\Users\\thasr\\anaconda3\\anaconda\\Scripts;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\nodejs\\;C:\\Program Files\\Amazon\\AWSCLIV2\\;C:\\Program Files\\Git\\cmd;D:\\flutter_SDK\\flutter_windows_3.27.1-stable\\flutter;D:\\android_sdk;C:\\Users\\thasr\\anaconda3\\a;C:\\Users\\thasr\\anaconda3\\a\\Library\\mingw-w64\\bin;C:\\Users\\thasr\\anaconda3\\a\\Library\\usr\\bin;C:\\Users\\thasr\\anaconda3\\a\\Library\\bin;C:\\Users\\thasr\\anaconda3\\a\\Scripts;C:\\Users\\thasr\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\thasr\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\thasr\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\thasr\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe;D:\\flutter_SDK\\flutter_windows_3.27.1-stable;C:\\Users\\thasr\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin;C:\\Users\\thasr\\AppData\\Local\\Programs\\Windsurf\\bin;C:\\Users\\thasr\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\thasr\\AppData\\Local\\Programs\\Antigravity IDE\\bin;C:\\Users\\thasr\\AppData\\Roaming\\npm;C:\\Users\\thasr\\AppData\\Local\\Unity\\bin;C:\\Users\\thasr\\.dotnet\\tools"
+      }
+    }
+  }
+}

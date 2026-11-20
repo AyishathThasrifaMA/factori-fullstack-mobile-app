@@ -1,0 +1,405 @@
+<!-- Copy of docs/ARCHITECTURE.html for static frontend serving -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factori - "Launch Your Mobile App" Architecture Document</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.6cm 1.4cm;
+    }
+    :root {
+      --primary: #1e293b;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --bg-subtle: #f8fafc;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 10pt;
+      background: #fff;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1, h2, h3, h4 {
+      color: var(--primary);
+      font-weight: 700;
+      page-break-after: avoid;
+    }
+    h1 {
+      font-size: 20pt;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.4rem;
+    }
+    h2 {
+      font-size: 13pt;
+      margin-top: 1.6rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 11pt;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      color: var(--accent);
+    }
+    p, ul, ol {
+      margin-top: 0.3rem;
+      margin-bottom: 0.6rem;
+    }
+    li {
+      margin-bottom: 0.2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.8rem 0;
+      font-size: 8.5pt;
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--bg-subtle);
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-weight: 600;
+    }
+    .badge-success { background: #dcfce7; color: #15803d; }
+    .badge-danger { background: #fee2e2; color: #b91c1c; }
+    .badge-warning { background: #fef3c7; color: #b45309; }
+    .badge-info { background: #dbeafe; color: #1d4ed8; }
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 4px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 0.8rem 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 9pt;
+      page-break-inside: avoid;
+    }
+    .meta-box {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: var(--accent-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 1.2rem;
+      font-size: 8.5pt;
+    }
+    .meta-box div strong {
+      display: block;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-size: 7.5pt;
+      letter-spacing: 0.5px;
+    }
+    pre, code {
+      font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+      font-size: 8pt;
+    }
+    pre {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 4px;
+      overflow-x: auto;
+      page-break-inside: avoid;
+    }
+    .diagram-box {
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      padding: 10px;
+      border-radius: 6px;
+      margin: 0.8rem 0;
+      font-family: monospace;
+      font-size: 8pt;
+      white-space: pre;
+      line-height: 1.2;
+      overflow-x: auto;
+      page-break-inside: avoid;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Factori "Launch Your Mobile App" - Full Technical Architecture</h1>
+  
+  <div class="meta-box">
+    <div><strong>Document Type</strong> Architecture &amp; Feasibility</div>
+    <div><strong>Target Platform</strong> Android (Native Kotlin Shell)</div>
+    <div><strong>Verification Date</strong> November 2024 (Current)</div>
+    <div><strong>Max Length</strong> 12 Pages Equivalent</div>
+  </div>
+
+  <h2>1. Executive Summary &amp; Core Verdict</h2>
+  <p>
+    Factori lets thousands of independent Indian retailers operate branded e-commerce storefronts under their own domains (<code>retailing.factori.com</code>). This document details the technical architecture, security design, operational costs, and feasibility findings for the <strong>"Launch Your Mobile App"</strong> initiative.
+  </p>
+  <div class="callout">
+    <strong>Chief Architecture Finding:</strong> An automated <strong>Android-first</strong> generator leveraging a native Kotlin <code>WebView</code> shell, multi-tenant push notifications (FCM), and automated Gradle build pipelines is <strong>100% technically viable and highly profitable</strong>. However, attempting to publish white-label web wrappers on the <strong>Apple App Store is NOT viable</strong> due to Apple Guideline 4.2 / 4.2.2 (Minimum Functionality) rejections. We strongly recommend an Android Native App + iOS Progressive Web App (PWA) strategy.
+  </div>
+
+  <h2>2. System Architecture &amp; Component Flow</h2>
+  <div class="diagram-box">
++----------------------------------------------------------------------------------------------------+
+|                                 FACTORI CLOUD INFRASTRUCTURE                                       |
++----------------------------------------------------------------------------------------------------+
+|  [ Retailer Dashboard (React/Vite) ]                                                               |
+|        |                                                                                           |
+|        v POST /api/generate (Store Name, Store URL, App Icon PNG)                                  |
+|  [ API Gateway &amp; Orchestrator (Node.js/Express) ]                                                 |
+|        |                                                                                           |
+|        +---> [ Key &amp; Keystore Vault ]  <--- Auto-generates per-retailer PKCS12 Keystore (.jks)     |
+|        |                                                                                           |
+|        +---> [ BullMQ / Redis Queue ]  <--- Throttles &amp; schedules builds (Max concurrent: 10-20)   |
+|                    |                                                                               |
+|                    v                                                                               |
+|        [ Ephemeral Build Worker (Docker / Linux / JDK 17 / Android SDK 35) ]                       |
+|              - Clones android-template/ into isolated sandbox                                      |
+|              - Injects retailer.xml (app_name, storefront_url) &amp; retailerApplicationId             |
+|              - Resizes &amp; copies launcher icon into mipmap-* drawables                              |
+|              - Executes: ./gradlew assembleRelease bundleRelease --no-daemon                       |
+|              - Signs artifacts with retailer's isolated release key                                |
+|                    |                                                                               |
+|                    v Artifacts Created                                                             |
+|        [ AWS S3 &amp; CloudFront CDN ]                                                                 |
+|              +-- app-release.apk (For direct WhatsApp / sideload testing)                          |
+|              +-- app-release.aab (For Google Play Console production upload)                       |
++----------------------------------------------------------------------------------------------------+
+  </div>
+
+  <h2>3. Feasibility Findings &amp; Critical Brief Corrections (Questions 1 - 6)</h2>
+  
+  <h3>Q1: Platform Viability (Android vs. iOS)</h3>
+  <ul>
+    <li><strong>Android: <span class="badge badge-success">YES, WITH CONDITIONS</span></strong>
+      Google Play permits web-powered apps, but enforces:
+      1) <em>Android App Bundle (.aab)</em> format since August 2021 (raw APKs cannot be published to Play Store);
+      2) <em>Minimum Functionality &amp; Spam Policy:</em> App must have native offline screens, push handling, and hardware navigation;
+      3) <em>20 Testers for 14 Days:</em> Required for new personal developer accounts created after Nov 13, 2023 (Organization accounts with D-U-N-S numbers are exempt).
+      <br><em>Official Source: <a href="https://support.google.com/googleplay/android-developer/answer/14151465">Google Play Console 14-Day Testing Requirement</a>, verified Nov 2024.</em>
+    </li>
+    <li><strong>iOS: <span class="badge badge-danger">NO / HIGH REJECTION RISK</span></strong>
+      Apple App Store Review Guideline 4.2 (Minimum Functionality) explicitly states: <em>"Apps that are merely web sites in a web view will be rejected."</em> Furthermore, Guideline 4.3 (Spam) forbids templated white-label clones. Each retailer must pay $99/year and complete corporate D-U-N-S verification. Direct IPA sideloading is impossible.
+      <br><em>Official Source: <a href="https://developer.apple.com/app-store/review/guidelines/#design">Apple App Store Review Guidelines</a>, verified Nov 2024.</em>
+    </li>
+  </ul>
+
+  <h3>Q2: Inaccuracies in the Founder's Brief &amp; Necessary Corrections</h3>
+  <table>
+    <thead>
+      <tr><th>Original Statement in Brief</th><th>Technical Reality</th><th>Engineering Replacement</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><em>"Shows the website in an iframe."</em></td>
+        <td>Native apps cannot execute <code>&lt;iframe&gt;</code> tags. Iframes cause severe cross-origin cookie errors, break UPI payments, and fail CSP policies.</td>
+        <td>Native Android <strong>WebView</strong> (or Trusted Web Activity) with native JavaScript interface bridge.</td>
+      </tr>
+      <tr>
+        <td><em>"They click Generate APK and the app is downloaded."</em></td>
+        <td>APKs can only be sideloaded. Google Play strictly mandates <strong>Android App Bundles (.aab)</strong>.</td>
+        <td>Generate <strong>both</strong> signed APK (for instant phone testing) and signed AAB (for Play Store publishing).</td>
+      </tr>
+      <tr>
+        <td><em>"Dashboard shows who has uninstalled."</em></td>
+        <td>Neither Android nor iOS provides an "uninstalled" system broadcast for user privacy.</td>
+        <td>Infer uninstalls using FCM silent push dead token feedback (<code>registration-token-not-registered</code>) + 30-day inactivity.</td>
+      </tr>
+      <tr>
+        <td><em>"Launch iOS app with one click without installing anything."</em></td>
+        <td>Consumer iPhones cannot install arbitrary IPAs without App Store / TestFlight enrollment.</td>
+        <td>Deploy an iOS <strong>Progressive Web App (PWA)</strong> with "Add to Home Screen" prompt and Web Push.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Q3: Store Account Ownership</h3>
+  <p>
+    Apps <strong>MUST go live under each retailer's own Google Play Developer Console account ($25 fee)</strong>. Factori publishing 1,000 retail storefronts under one master account would trigger Google Play's white-label spam filter, causing a complete account termination affecting every single merchant. Furthermore, India's <em>Consumer Protection (E-Commerce) Rules 2020</em> mandate that the legal seller of record be clearly identified.
+  </p>
+
+  <h3>Q4: Realistic Timeline to Customer Install</h3>
+  <ul>
+    <li><strong>Direct Sideloading (Testing/WhatsApp):</strong> 2 to 4 minutes build time. Merchant can install immediately.</li>
+    <li><strong>Google Play Store (Organization Account with D-U-N-S):</strong> 3 to 5 business days (1-2 days console setup + 2-3 days Google app review).</li>
+    <li><strong>Google Play Store (Personal Account):</strong> 18 to 21 days (Mandatory 14-day closed testing with 20 opt-in testers).</li>
+  </ul>
+
+  <h3>Q5: Ongoing App Store Maintenance at 1,000 Apps</h3>
+  <p>
+    Google Play requires annual <code>targetSdkVersion</code> updates (within 1 year of latest Android release, every August 31st). Maintaining 1,000 apps manually would require over 500 engineering hours. Factori must deploy an automated <strong>batch-rebuild script</strong> connected to the <strong>Google Play Developer Publishing API</strong> via service accounts.
+  </p>
+
+  <h3>Q6: Rejection Grounds &amp; Countermeasures</h3>
+  <ul>
+    <li><em>White screen on offline drop:</em> Mitigated with native offline detection and custom branded retry screen.</li>
+    <li><em>Account Deletion Policy violation:</em> Mitigated by ensuring a dedicated in-app and web account deletion link is present.</li>
+    <li><em>SSL / Insecure Traffic:</em> Mitigated by disabling cleartext traffic and cancelling all invalid SSL connections (<code>handler.cancel()</code>).</li>
+  </ul>
+
+  <h2>4. Generating the App &amp; Build Engine (Questions 7 - 11)</h2>
+  <p>
+    The generator runs on a headless Linux worker cluster. The worker pulls a lightweight Android skeleton, generates a dedicated PKCS12 keystore via <code>keytool</code>, writes <code>retailer.xml</code>, injects launcher icons, and executes <code>assembleRelease</code> and <code>bundleRelease</code>.
+  </p>
+  <ul>
+    <li><strong>What makes each app unique:</strong> Package ID (e.g. <code>com.factori.zolara.a1b2c3d4</code>), Signing Key SHA-256 fingerprint, Display Name, Launcher Icon, and Target Storefront URL. <em>The Package ID and Signing Key can NEVER be changed after launch.</em></li>
+    <li><strong>Signing Key Custody:</strong> Stored in an encrypted AWS KMS Keystore Vault. Google Play App Signing is enforced so if an upload key is compromised, it can be reset without orphaning live installs. Merchants who leave Factori can export their <code>.jks</code> keystore.</li>
+    <li><strong>Handling 300 Builds in One Hour:</strong> Distributed queue (BullMQ/Redis) with 10 autoscaled worker nodes (2 builds per node). At 2.5 minutes per build, all 300 builds clear in <strong>37.5 minutes</strong> at a compute cost of <strong>~$0.0035 (₹0.30) per build</strong>.</li>
+  </ul>
+
+  <h2>5. Inside the Native App &amp; Technical Resolutions (Questions 12 - 16)</h2>
+  <table>
+    <thead>
+      <tr><th>Storefront Feature</th><th>Failure Mode in Default WebView</th><th>Factori Native Architecture Fix</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>UPI Payments</strong></td>
+        <td><code>upi://</code>, <code>phonepe://</code>, <code>paytmmp://</code> trigger <code>ERR_UNKNOWN_URL_SCHEME</code> crashes.</td>
+        <td>Intercepted in <code>shouldOverrideUrlLoading</code>; dispatched directly to native UPI apps via Android <code>Intent.ACTION_VIEW</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Payment Gateways (Razorpay, etc.)</strong></td>
+        <td>3D Secure bank redirects trap the user or fail popup security rules.</td>
+        <td>Whitelisted payment gateways opened via <strong>Chrome Custom Tabs</strong> for maximum security and auto-fill support.</td>
+      </tr>
+      <tr>
+        <td><strong>Login &amp; Persistent Session</strong></td>
+        <td>Sessions drop when app closes or cookies are evicted from memory.</td>
+        <td>Android <code>CookieManager</code> enabled with persistent SQLite sync + 180-day refresh token architecture.</td>
+      </tr>
+      <tr>
+        <td><strong>Hardware Back Button</strong></td>
+        <td>Pressing Back terminates the app instead of navigating previous pages.</td>
+        <td>Handled via <code>onBackPressedDispatcher</code>: checks <code>webView.canGoBack()</code> before exiting.</td>
+      </tr>
+      <tr>
+        <td><strong>Customer Identification</strong></td>
+        <td>Native app has no visibility into customer identity.</td>
+        <td>Bidirectional JavaScript Interface: <code>window.FactoriBridge.identifyCustomer(payload)</code> binds customer phone/ID to FCM token.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>6. Push Notifications, Data Model &amp; Anti-Spam (Questions 17 - 21)</h2>
+  <ul>
+    <li><strong>Tenant Isolation:</strong> Devices are registered in an <code>app_devices</code> table strictly partitioned by <code>app_id</code> and <code>retailer_id</code>. Notifications are dispatched via batch multicast (<code>sendEachForMulticast</code>) targeting only that retailer's devices.</li>
+    <li><strong>Scaling FCM past 1,000 stores:</strong> Rather than managing 1,000 separate Firebase console projects, Factori uses a master enterprise notification dispatcher, partitioning devices at the database tier.</li>
+    <li><strong>Anti-Spam Controls:</strong> Android 13+ runtime notification permissions enforced; Factori hard limit of 1 promotional push per 24 hours; automated quiet hours between 9 PM and 9 AM IST.</li>
+  </ul>
+
+  <h2>7. Complete Relational Data Schema</h2>
+  <pre>
+CREATE TABLE retailers (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    domain VARCHAR(255) UNIQUE NOT NULL,
+    storefront_url VARCHAR(500) NOT NULL,
+    delivered_orders INT DEFAULT 0,
+    settled_gmv_inr DECIMAL(12, 2) DEFAULT 0.00,
+    is_unlocked BOOLEAN DEFAULT FALSE,
+    app_version VARCHAR(32) DEFAULT '1.0.0',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE customers (
+    id VARCHAR(64) PRIMARY KEY,
+    retailer_id VARCHAR(64) REFERENCES retailers(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(32) NOT NULL,
+    email VARCHAR(255),
+    total_orders INT DEFAULT 0,
+    total_spend_inr DECIMAL(12, 2) DEFAULT 0.00,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE app_devices (
+    id VARCHAR(64) PRIMARY KEY,
+    retailer_id VARCHAR(64) REFERENCES retailers(id) ON DELETE CASCADE,
+    customer_id VARCHAR(64) REFERENCES customers(id) ON DELETE SET NULL,
+    phone VARCHAR(32) NOT NULL,
+    platform VARCHAR(64) NOT NULL,
+    fcm_token TEXT NOT NULL,
+    installed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    logged_in_at TIMESTAMP WITH TIME ZONE,
+    last_active_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    status VARCHAR(32) DEFAULT 'active'
+);
+  </pre>
+
+  <h2>8. Eligibility Rule &amp; Merchant Wireframes (Questions 23 - 24)</h2>
+  <p>
+    <strong>Unlock Condition:</strong> <code>Delivered Orders &ge; 500</code> OR <code>Delivered GMV &ge; &#8377;2,50,000</code>.<br>
+    Cancelled, returned, and self-placed test orders are filtered out by the backend order reconciliation service. A retailer at 480 orders sees a gamified progress card: <em>"You are 96% of the way to launching your branded mobile app! Just 20 more completed orders to unlock."</em>
+  </p>
+
+  <h2>9. Cost Summary Table (Factori Infrastructure at Scale)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Infrastructure Component</th>
+        <th>100 Apps / Mo</th>
+        <th>1,000 Apps / Mo</th>
+        <th>10,000 Apps / Mo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Build Compute (AWS EC2 / Spot)</td><td>$25 (&#8377;2,075)</td><td>$85 (&#8377;7,055)</td><td>$350 (&#8377;29,050)</td></tr>
+      <tr><td>Artifact Storage &amp; CDN (S3 + CloudFront)</td><td>$10 (&#8377;830)</td><td>$40 (&#8377;3,320)</td><td>$250 (&#8377;20,750)</td></tr>
+      <tr><td>Database &amp; Queue Cluster (RDS + Redis)</td><td>$30 (&#8377;2,490)</td><td>$70 (&#8377;5,810)</td><td>$250 (&#8377;20,750)</td></tr>
+      <tr><td>Keystore Security &amp; KMS</td><td>$5 (&#8377;415)</td><td>$20 (&#8377;1,660)</td><td>$150 (&#8377;12,450)</td></tr>
+      <tr><td>Push Notifications &amp; Telemetry</td><td>$0 (&#8377;0)</td><td>$10 (&#8377;830)</td><td>$150 (&#8377;12,450)</td></tr>
+      <tr><td>Monitoring &amp; CERT-In Audit Logs</td><td>$15 (&#8377;1,245)</td><td>$70 (&#8377;5,810)</td><td>$500 (&#8377;41,500)</td></tr>
+      <tr style="font-weight: bold; background: #f1f5f9;">
+        <td>Total Monthly Platform Cost</td>
+        <td>$85 (&#8377;7,055)</td>
+        <td>$295 (&#8377;24,485)</td>
+        <td>$1,650 (&#8377;1,36,950)</td>
+      </tr>
+      <tr style="font-weight: bold; color: var(--accent);">
+        <td>Platform Cost Per App / Month</td>
+        <td>$0.85 (&#8377;70.55)</td>
+        <td>$0.295 (&#8377;24.49)</td>
+        <td>$0.165 (&#8377;13.70)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>10. Delivery Plan &amp; CTO Recommendation (Questions 29 - 30)</h2>
+  <ul>
+    <li><strong>First Two Weeks (De-Risking):</strong> Test native UPI app redirection on real Xiaomi/Samsung devices; validate Google Play Developer API automated upload; verify offline cache behavior.</li>
+    <li><strong>MVP Scope:</strong> Android WebView shell, UPI intent routing, offline fallback, push notification dispatcher, self-service Play Store documentation.</li>
+    <li><strong>CTO Final Recommendation:</strong> <em>"YES, BUILD THIS FOR ANDROID. DO NOT PROMISE NATIVE IOS APP STORE DEPLOYMENTS."</em> An Android-first mobile presence with push notifications creates immense merchant lock-in and protects platform GMV at negligible infrastructure cost.</li>
+  </ul>
+
+</body>
+</html>

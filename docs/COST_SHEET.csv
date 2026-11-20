@@ -1,0 +1,16 @@
+Category,Item,Unit Cost,100 Apps / Mo (USD),100 Apps / Mo (INR),1000 Apps / Mo (USD),1000 Apps / Mo (INR),10000 Apps / Mo (USD),10000 Apps / Mo (INR),Notes
+Factori Infrastructure,Build Compute (AWS EC2 / Spot),$0.0035 / build + base,$25.00,"₹2,075.00",$85.00,"₹7,055.00",$350.00,"₹29,050.00",Ephemeral c6i.xlarge worker instances (2.5 min build duration)
+Factori Infrastructure,Artifact Storage & CDN (S3 + CloudFront),$0.023 / GB,$10.00,"₹830.00",$40.00,"₹3,320.00",$250.00,"₹20,750.00",Storing release APKs & AABs (~15 MB per build)
+Factori Infrastructure,Database & Queue (RDS Postgres + Redis),Managed cluster,$30.00,"₹2,490.00",$70.00,"₹5,810.00",$250.00,"₹20,750.00",Multi-tenant app records device tokens and BullMQ queue
+Factori Infrastructure,Keystore Security (AWS KMS),$1.00 / key / yr + ops,$5.00,"₹415.00",$20.00,"₹1,660.00",$150.00,"₹12,450.00",Envelope encryption for retailer PKCS12 signing keystores
+Factori Infrastructure,Push Notification Dispatch (FCM Compute),FCM is free,$0.00,"₹0.00",$10.00,"₹830.00",$150.00,"₹12,450.00",FCM HTTP v1 delivery compute & token pruning workers
+Factori Infrastructure,Monitoring & Audit Logging (Sentry + CloudWatch),Logs + APM,$15.00,"₹1,245.00",$70.00,"₹5,810.00",$500.00,"₹41,500.00",Android Vitals Sentry crash reporting and audit trails
+Factori Infrastructure,Subtotal Monthly Infrastructure,,$85.00,"₹7,055.00",$295.00,"₹24,485.00","$1,650.00","₹1,36,950.00",Total platform infrastructure cost
+Factori Infrastructure,Factori Cost Per App Per Month,,$0.85,"₹70.55",$0.295,"₹24.49",$0.165,"₹13.70",Decreases 80% as scale expands
+Retailer Costs,Google Play Developer Account (One-Time),$25 one-time,$25.00,"₹2,075.00",$25.00,"₹2,075.00",$25.00,"₹2,075.00",Paid directly by retailer to Google Play
+Retailer Costs,Apple Developer Program (Annual - Optional),$99 / year,$99.00,"₹8,217.00",$99.00,"₹8,217.00",$99.00,"₹8,217.00",Only if merchant attempts iOS listing (not recommended)
+Retailer Costs,Factori Hosting / App Maintenance Fee,Free tier,$0.00,"₹0.00",$0.00,"₹0.00",$0.00,"₹0.00",Included as high-value retention benefit for top retailers
+Operational Staffing,DevOps & Mobile Maintenance Engineer,$1200 / mo part-time,$300.00,"₹24,900.00",$600.00,"₹49,800.00","$1,200.00","₹99,600.00",Annual targetSdkVersion updates policy reviews & support
+Summary,Total Monthly Running Cost (Infra + Staffing),,$385.00,"₹31,955.00",$895.00,"₹74,285.00","$2,850.00","₹2,36,550.00",Complete operating expenditure
+Summary,All-In Cost Per Active App Per Month,,$3.85,"₹319.55",$0.895,"₹74.29",$0.285,"₹23.66",Highly viable economics
+
